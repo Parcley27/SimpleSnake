@@ -42,6 +42,15 @@ fps = pygame.time.Clock()
 # Initial game setup
 highscore = 0
 
+# Generate fruit
+def generate_fruit():
+    while True:
+        new_position = [random.randrange(1, (window_x // square_size)) * square_size,
+                        random.randrange(1, (window_y // square_size)) * square_size]
+        # Check if new fruit position is on the snake's body
+        if new_position not in snake_body:
+            return new_position
+
 # Restart the game setup
 def restart_game():
     starting_x = 10 * square_size
@@ -50,8 +59,8 @@ def restart_game():
     global snake_position, snake_body, fruit_position, fruit_spawn, direction, change_to, score
     snake_position = [starting_x, starting_y]
     snake_body = [[starting_x, starting_y], [starting_x - square_size, starting_y], [starting_x - (2 * square_size), starting_y]]
-    fruit_position = [random.randrange(1, (window_x // square_size)) * square_size,
-                      random.randrange(1, (window_y // square_size)) * square_size]
+    fruit_position = generate_fruit()
+
     fruit_spawn = True
     direction = 'RIGHT'
     change_to = direction
@@ -172,9 +181,9 @@ while True:
     else:
         snake_body.pop()
 
+    # Inside the main loop, where the fruit is spawned:
     if not fruit_spawn:
-        fruit_position = [random.randrange(1, (window_x // square_size)) * square_size,
-                          random.randrange(1, (window_y // square_size)) * square_size]
+        fruit_position = generate_fruit()
         
     fruit_spawn = True
 
