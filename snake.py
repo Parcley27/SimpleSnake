@@ -10,6 +10,11 @@ grid_size_x = 24  # Number of squares horizontally
 grid_size_y = 16  # Number of squares vertically
 square_size = min(window_x // grid_size_x, window_y // grid_size_y)  # Calculate square size dynamically
 
+# Window Icon
+# Image from https://www.redbubble.com/shop/python+stickers
+window_icon = pygame.image.load("Python Snake Icon.jpg")
+pygame.display.set_icon(window_icon)
+
 # Defining colors
 black = pygame.Color(0, 0, 0)
 white = pygame.Color(255, 255, 255)
