@@ -3,13 +3,13 @@ import pygame
 import random
 
 # Constants
-snake_speed = 8
-window_x = 720
-window_y = 480
-grid_size_x = 24  # Number of squares horizontally
-grid_size_y = 16  # Number of squares vertically
-square_size = min(window_x // grid_size_x, window_y // grid_size_y)  # Calculate square size dynamically
-max_moves = 2  # Maximum number of moves in the queue
+snake_speed = 10
+window_x = 1200
+window_y = 600
+grid_size_x = 30  # Number of squares horizontally
+grid_size_y = 1  # Number of squares vertically
+square_size = min((window_x // grid_size_x), (window_y // grid_size_y))  # Calculate square size dynamically
+max_moves = 5  # Maximum number of moves in the queue
 
 # Window Icon
 window_icon = pygame.image.load("Python Snake Icon.jpg")
@@ -25,8 +25,10 @@ gray = pygame.Color(200, 200, 200)
 # Define a function to get adjusted green color
 def adjusted_green_color(index):
     adjustedGreen = 165 + (index * 5)
+
     if adjustedGreen > 255:
         adjustedGreen = 255
+
     return pygame.Color(0, adjustedGreen, 0)
 
 # Initialize pygame
@@ -47,6 +49,7 @@ def generate_fruit():
     while True:
         new_position = [random.randrange(1, (window_x // square_size)) * square_size,
                         random.randrange(1, (window_y // square_size)) * square_size]
+        
         if new_position not in snake_body:
             return new_position
 
@@ -56,10 +59,10 @@ def restart_game():
     starting_y = 8 * square_size
 
     global snake_position, snake_body, fruit_position, fruit_spawn, direction, move_queue, score
+
     snake_position = [starting_x, starting_y]
     snake_body = [[starting_x, starting_y], [starting_x - square_size, starting_y], [starting_x - (2 * square_size), starting_y]]
     fruit_position = generate_fruit()
-
     fruit_spawn = True
     direction = 'RIGHT'
     move_queue = []  # Move queue initialized empty
@@ -78,7 +81,7 @@ def show_score(color, font, size):
 def show_controls(color, font, size):
     controls_font = pygame.font.SysFont(font, size)
     controls_surface = controls_font.render("WASD or ARROWS to Move", True, color)
-    game_window.blit(controls_surface, (250, window_y + 10))
+    game_window.blit(controls_surface, (500, window_y + 10))
 
 # Displaying Highscore function in the white bar
 def show_highscore(color, font, size):
@@ -95,19 +98,21 @@ def game_over():
 
     pygame.draw.rect(game_window, white, pygame.Rect((window_x / 2) - 300, (window_y / 2) - 200, 600, 400))
 
-    my_font = pygame.font.SysFont('Arial', 50)
-    game_over_surface = my_font.render(f"Your Score: {score}", True, black)
+    restart_rect = pygame.Rect((window_x / 2) - 70, (window_y / 2) + 40, 140, 80)
+    pygame.draw.rect(game_window, gray, restart_rect)
+
+    title_font = pygame.font.SysFont('Arial', 50)
+
+    game_over_surface = title_font.render(f"Your Score: {score}", True, black)
     game_over_rect = game_over_surface.get_rect(center=(window_x / 2, (window_y / 2) - 100))
     game_window.blit(game_over_surface, game_over_rect)
 
-    highscore_surface = my_font.render(f"Highscore: {highscore}", True, black)
+    highscore_surface = title_font.render(f"Highscore: {highscore}", True, black)
     highscore_rect = highscore_surface.get_rect(center=(window_x / 2, (window_y / 2) - 30))
     game_window.blit(highscore_surface, highscore_rect)
 
     button_font = pygame.font.SysFont('Arial', 30)
     restart_surface = button_font.render('Restart', True, black)
-    restart_rect = pygame.Rect((window_x / 2) - 70, (window_y / 2) + 40, 140, 80)
-    pygame.draw.rect(game_window, gray, restart_rect)
     game_window.blit(restart_surface, ((window_x / 2) - 40, (window_y / 2) + 60))
 
     pygame.display.flip()
@@ -116,11 +121,13 @@ def game_over():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
+
                 quit()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if restart_rect.collidepoint(event.pos):
                     restart_game()
+
                     return  # Exit the game_over loop and restart the game
 
 # Main Game Loop
@@ -129,6 +136,7 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             quit()
+
         if event.type == pygame.KEYDOWN:
             # Add inputs to the move queue
             if event.key == pygame.K_w or event.key == pygame.K_UP:
@@ -152,20 +160,26 @@ while True:
         next_move = move_queue.pop(0)  # Take the first move in the queue
         if next_move == 'UP' and direction != 'DOWN':
             direction = 'UP'
+
         elif next_move == 'DOWN' and direction != 'UP':
             direction = 'DOWN'
+
         elif next_move == 'LEFT' and direction != 'RIGHT':
             direction = 'LEFT'
+
         elif next_move == 'RIGHT' and direction != 'LEFT':
             direction = 'RIGHT'
 
     # Move the snake
     if direction == 'UP':
         snake_position[1] -= square_size
+
     if direction == 'DOWN':
         snake_position[1] += square_size
+
     if direction == 'LEFT':
         snake_position[0] -= square_size
+
     if direction == 'RIGHT':
         snake_position[0] += square_size
 
@@ -174,6 +188,7 @@ while True:
     if snake_position[0] == fruit_position[0] and snake_position[1] == fruit_position[1]:
         score += 1
         fruit_spawn = False
+        
     else:
         snake_body.pop()
 
