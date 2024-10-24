@@ -2,13 +2,29 @@
 import pygame
 import random
 
+# Set grid dimensions in pixels
+grid_width = 1200
+grid_height = 600
+
+# Number of squares the grid is wide
+grid_width_in_squares = 30
+
+# Square size
+square_size = grid_width // grid_width_in_squares
+
+# Set window dimensions in pixels
+window_width = grid_width
+window_height = grid_height + 60
+
+# Square size
+square_size = grid_width // grid_width_in_squares
+
+# Set window dimensions in pixels
+window_width = grid_width
+window_height = grid_height + 60
+
 # Constants
-snake_speed = 10
-window_x = 1200
-window_y = 600
-grid_size_x = 30  # Number of squares horizontally
-grid_size_y = 1  # Number of squares vertically
-square_size = min((window_x // grid_size_x), (window_y // grid_size_y))  # Calculate square size dynamically
+snake_speed = 15
 max_moves = 5  # Maximum number of moves in the queue
 
 # Window Icon
@@ -36,7 +52,7 @@ pygame.init()
 
 # Initialize game window
 pygame.display.set_caption('Simple Snake')
-game_window = pygame.display.set_mode((window_x, window_y + 40))  # Additional space for the white bar
+game_window = pygame.display.set_mode((window_width, window_height))  # Additional space for the white bar
 
 # FPS (frames per second) controller
 fps = pygame.time.Clock()
@@ -47,8 +63,8 @@ highscore = 0
 # Generate fruit
 def generate_fruit():
     while True:
-        new_position = [random.randrange(1, (window_x // square_size)) * square_size,
-                        random.randrange(1, (window_y // square_size)) * square_size]
+        new_position = [random.randrange(1, (grid_width // square_size)) * square_size,
+                        random.randrange(1, (grid_height // square_size)) * square_size]
         
         if new_position not in snake_body:
             return new_position
@@ -75,19 +91,19 @@ restart_game()
 def show_score(color, font, size):
     score_font = pygame.font.SysFont(font, size)
     score_surface = score_font.render('Score: ' + str(score), True, color)
-    game_window.blit(score_surface, (20, window_y + 10))
+    game_window.blit(score_surface, (20, window_height - 40))
 
 # Display game controlls
 def show_controls(color, font, size):
     controls_font = pygame.font.SysFont(font, size)
     controls_surface = controls_font.render("WASD or ARROWS to Move", True, color)
-    game_window.blit(controls_surface, (500, window_y + 10))
+    game_window.blit(controls_surface, (500, window_height - 40))
 
 # Displaying Highscore function in the white bar
 def show_highscore(color, font, size):
     highscore_font = pygame.font.SysFont(font, size)
     highscore_surface = highscore_font.render("Highscore: " + str(highscore), True, color)
-    game_window.blit(highscore_surface, (window_x - 110, window_y + 10))
+    game_window.blit(highscore_surface, (window_width - 110, window_height - 40))
 
 # Game over function with restart button and white background
 def game_over():
@@ -96,24 +112,24 @@ def game_over():
     if score > highscore:
         highscore = score
 
-    pygame.draw.rect(game_window, white, pygame.Rect((window_x / 2) - 300, (window_y / 2) - 200, 600, 400))
+    pygame.draw.rect(game_window, white, pygame.Rect((window_width / 2) - 300, (window_height / 2) - 200, 600, 400))
 
-    restart_rect = pygame.Rect((window_x / 2) - 70, (window_y / 2) + 40, 140, 80)
+    restart_rect = pygame.Rect((window_width / 2) - 70, (window_height / 2) + 40, 140, 80)
     pygame.draw.rect(game_window, gray, restart_rect)
 
     title_font = pygame.font.SysFont('Arial', 50)
 
     game_over_surface = title_font.render(f"Your Score: {score}", True, black)
-    game_over_rect = game_over_surface.get_rect(center=(window_x / 2, (window_y / 2) - 100))
+    game_over_rect = game_over_surface.get_rect(center=(window_width / 2, (window_height / 2) - 100))
     game_window.blit(game_over_surface, game_over_rect)
 
     highscore_surface = title_font.render(f"Highscore: {highscore}", True, black)
-    highscore_rect = highscore_surface.get_rect(center=(window_x / 2, (window_y / 2) - 30))
+    highscore_rect = highscore_surface.get_rect(center=(window_width / 2, (window_height / 2) - 30))
     game_window.blit(highscore_surface, highscore_rect)
 
     button_font = pygame.font.SysFont('Arial', 30)
     restart_surface = button_font.render('Restart', True, black)
-    game_window.blit(restart_surface, ((window_x / 2) - 40, (window_y / 2) + 60))
+    game_window.blit(restart_surface, ((window_width / 2) - 40, (window_height / 2) + 60))
 
     pygame.display.flip()
 
@@ -198,8 +214,8 @@ while True:
     fruit_spawn = True
 
     game_window.fill(white)
-    for x in range(0, window_x, square_size):
-        for y in range(0, window_y, square_size):
+    for x in range(0, grid_width, square_size):
+        for y in range(0, grid_height, square_size):
             pygame.draw.rect(game_window, gray, pygame.Rect(x, y, square_size, square_size), 1)
 
     for i, pos in enumerate(snake_body):
@@ -208,14 +224,15 @@ while True:
 
     pygame.draw.rect(game_window, red, pygame.Rect(fruit_position[0], fruit_position[1], square_size, square_size))
 
-    pygame.draw.rect(game_window, white, pygame.Rect(0, window_y, window_x, 40))
-    pygame.draw.line(game_window, black, (0, window_y), (window_x, window_y), 2)
+    # Box for bottom text
+    pygame.draw.rect(game_window, white, pygame.Rect(0, grid_height, grid_width, grid_height))
+    pygame.draw.line(game_window, black, (0, grid_height), (grid_width, grid_height), 2)
 
     show_score(black, 'Arial', 20)
     show_controls(black, "Arial", 20)
     show_highscore(black, 'Arial', 20)
 
-    if snake_position[0] < 0 or snake_position[0] > window_x - square_size or snake_position[1] < 0 or snake_position[1] > window_y - square_size:
+    if snake_position[0] < 0 or snake_position[0] > grid_width - square_size or snake_position[1] < 0 or snake_position[1] > grid_height - square_size:
         game_over()
 
     for block in snake_body[1:]:
