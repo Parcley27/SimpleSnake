@@ -24,7 +24,7 @@ window_width = grid_width
 window_height = grid_height + 60
 
 # Constants
-snake_speed = 15
+snake_speed = 10
 max_moves = 5  # Maximum number of moves in the queue
 
 # Window Icon
@@ -88,19 +88,19 @@ def restart_game():
 restart_game()
 
 # Displaying Score function in the white bar
-def show_score(color, font, size):
+def score_display(color, font, size):
     score_font = pygame.font.SysFont(font, size)
     score_surface = score_font.render('Score: ' + str(score), True, color)
     game_window.blit(score_surface, (20, window_height - 40))
 
 # Display game controlls
-def show_controls(color, font, size):
+def controls_display(color, font, size):
     controls_font = pygame.font.SysFont(font, size)
     controls_surface = controls_font.render("WASD or ARROWS to Move", True, color)
     game_window.blit(controls_surface, (500, window_height - 40))
 
 # Displaying Highscore function in the white bar
-def show_highscore(color, font, size):
+def highscore_display(color, font, size):
     highscore_font = pygame.font.SysFont(font, size)
     highscore_surface = highscore_font.render("Highscore: " + str(highscore), True, color)
     game_window.blit(highscore_surface, (window_width - 110, window_height - 40))
@@ -228,9 +228,9 @@ while True:
     pygame.draw.rect(game_window, white, pygame.Rect(0, grid_height, grid_width, grid_height))
     pygame.draw.line(game_window, black, (0, grid_height), (grid_width, grid_height), 2)
 
-    show_score(black, 'Arial', 20)
-    show_controls(black, "Arial", 20)
-    show_highscore(black, 'Arial', 20)
+    score_display(black, 'Arial', 20)
+    controls_display(black, "Arial", 20)
+    highscore_display(black, 'Arial', 20)
 
     if snake_position[0] < 0 or snake_position[0] > grid_width - square_size or snake_position[1] < 0 or snake_position[1] > grid_height - square_size:
         game_over()
